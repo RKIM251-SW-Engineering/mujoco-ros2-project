@@ -185,7 +185,6 @@ Set these in the shell or in a `.env` file next to `docker-compose.yml`:
 | Variable | Default | Meaning |
 |---|---|---|
 | `ROS_DOMAIN_ID` | `0` | ROS 2 domain. Choose your own number (0 to 101) if other ROS 2 systems share the network, and use the same in all your containers |
-| `ROS_LOCALHOST_ONLY` | `0` | `1` = do not talk to ROS 2 nodes on other machines |
 | `VIEWER` | `true` | Open the viewer window |
 | `VIEWER_CAMERA` | `free` | Camera of the viewer: `free` (move it with the mouse) or `front`, `overview`, `workspace_camera` |
 | `VIEWER_UI` | `true` | Show the menus at the sides of the viewer |
@@ -202,3 +201,6 @@ Set these in the shell or in a `.env` file next to `docker-compose.yml`:
   Toolkit and a `deploy.resources` entry in the compose file.
 - **Topics of other people's simulations show up, or yours are missing:** set your own
   `ROS_DOMAIN_ID`, the same for all your containers.
+- **Do not set `ROS_LOCALHOST_ONLY=1`:** the simulation talks to other containers over UDP, which
+  ROS 2 Humble turns off in this mode. Then your containers see the simulation's topics, but its
+  services and actions never answer. Use your own `ROS_DOMAIN_ID` instead.
