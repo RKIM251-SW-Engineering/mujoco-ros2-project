@@ -1,0 +1,11 @@
+# Moves the gripper fingers and waits until they have stopped.
+
+# Opening between the fingertips in m: 0.085 = fully open, 0.0 = closed
+float64 width
+---
+bool success
+string message
+# Measured opening after the motion [m]
+float64 width
+# The fingers were stopped by an object before reaching the requested width
+bool object_grasped

@@ -5,6 +5,13 @@ and an RGB-D camera, simulated with MuJoCo and connected to ROS 2 Humble. The si
 ready-made Docker image; you do not build it, you use it through its ROS 2 topics, services and
 actions.
 
+## This folder
+
+```
+README.md          this file
+mujoco_sim_msgs/   ROS 2 package with the action and service definitions of the simulation
+```
+
 ## Get the image
 
 ```bash
@@ -62,14 +69,12 @@ All names are in the namespace `/mj`.
 | `/mj/move_to_pose` | action `mujoco_sim_msgs/MoveToPose` | Move the tool centre point to a pose, with feedback and result |
 | `/mj/move_gripper` | service `mujoco_sim_msgs/MoveGripper` | Move the fingers, wait until they stop, report a grasp |
 
-`mujoco_sim_msgs` is a ROS 2 package of the simulation. To call the action or the service from your
-own container, copy the package out of the image into your workspace and build it there with
-your packages, e.g. for the task planning:
+`mujoco_sim_msgs` is the ROS 2 package with these definitions; it is in this folder. To call the
+action or the service from your own container, copy it into your workspace and build it there
+with your packages, e.g. for the task planning:
 
 ```bash
-docker run --rm --user "$(id -u):$(id -g)" -v "$PWD/docker-task-planning/ros2_ws/src:/out" \
-    --entrypoint cp ghcr.io/rkim251-sw-engineering/mujoco-ros2-sim:humble \
-    -r /opt/mujoco_ws/src/mujoco_sim_msgs /out/
+cp -r docker-mujoco-sim/mujoco_sim_msgs docker-task-planning/ros2_ws/src/
 ```
 
 The definitions:

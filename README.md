@@ -5,7 +5,7 @@ table. Your task is to build the components that let the robot sort the objects 
 
 | Folder | Component |
 |---|---|
-| `docker-mujoco-sim/` | The simulation. **Given**, as a ready-made Docker image; see its [README](docker-mujoco-sim/README.md) |
+| `docker-mujoco-sim/` | The simulation. **Given**, as a ready-made Docker image plus its interface package `mujoco_sim_msgs`; see its [README](docker-mujoco-sim/README.md) |
 | `docker-object-detection/` | Object detection. **Your task** |
 | `docker-task-planning/` | Task planning. **Your task** |
 
@@ -44,8 +44,8 @@ which libraries you use and how you test them.
 - **Build context:** build each image from its own folder only, so that it does not depend on the
   other folders.
 - **Interfaces of other components:** a package that calls another component needs that
-  component's interface package (e.g. `mujoco_sim_msgs` for the robot and the gripper) in its own
-  workspace. The simulation README shows how to copy `mujoco_sim_msgs` out of its image.
+  component's interface package in its own workspace. For the robot and the gripper this is
+  `docker-mujoco-sim/mujoco_sim_msgs`: copy it into your `ros2_ws/src`.
 
 ## docker-compose.yml
 

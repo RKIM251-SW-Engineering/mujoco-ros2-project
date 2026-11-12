@@ -1,0 +1,15 @@
+# Moves the tool centre point (tcp, between the fingertips) along a straight line to a target pose.
+
+# Target pose of the tcp in the robot base frame (frame_id "world" or empty)
+geometry_msgs/PoseStamped target_pose
+---
+bool success
+string message
+# Remaining deviation of the tcp from the target pose
+float64 position_error      # m
+float64 orientation_error   # rad
+---
+# Fraction of the planned path that has been commanded, 0..1
+float64 progress
+# Current distance of the tcp from the target position [m]
+float64 distance_to_target
