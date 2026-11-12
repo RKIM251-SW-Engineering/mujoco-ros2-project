@@ -1,0 +1,35 @@
+# Starts the project: `docker compose up` (add --build once your own components are in here).
+#
+# So far only the simulation. Add a service for each of your components
+# (docker-object-detection, docker-task-planning); see README.md.
+#
+# Settings can be given in the shell or in a .env file in this folder, e.g.
+#   ROS_DOMAIN_ID=42 VIEWER=false docker compose up
+services:
+  # MuJoCo simulation of the workcell: robot, gripper and camera (see docker-mujoco-sim/README.md)
+  sim:
+    image: ghcr.io/rkim251-sw-engineering/mujoco-ros2-sim:humble
+    container_name: mujoco-sim
+    command: >-
+      ros2 launch mujoco_sim sim.launch.py viewer:=${VIEWER:-true}
+      viewer_camera:=${VIEWER_CAMERA:-free} viewer_ui:=${VIEWER_UI:-true}
+    # Host network + IPC so that the containers see each other's ROS 2 topics
+    network_mode: host
+    ipc: host
+    environment:
+      - DISPLAY=${DISPLAY:-:0}
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - ROS_LOCALHOST_ONLY=${ROS_LOCALHOST_ONLY:-0}
+      # Offscreen rendering backend (camera images): egl = GPU, osmesa = CPU fallback
+      - MUJOCO_GL=${MUJOCO_GL:-egl}
+    volumes:
+      # Viewer window on the host display
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    # GPU access for Mesa (Intel/AMD). Group IDs are the host's `video` and `render` groups.
+    devices:
+      - /dev/dri:/dev/dri
+    group_add:
+      - "${VIDEO_GID:-44}"
+      - "${RENDER_GID:-109}"
+    # ros2 launch shuts its nodes down cleanly on Ctrl+C, not on the default SIGTERM
+    stop_signal: SIGINT
