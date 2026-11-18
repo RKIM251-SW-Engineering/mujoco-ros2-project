@@ -18,9 +18,16 @@ through ROS 2 (Humble) topics, services and actions.
 2. Pull the simulation image and start it (see [docker-mujoco-sim/README.md](docker-mujoco-sim/README.md)):
 
    ```bash
-   docker pull ghcr.io/rkim251-sw-engineering/mujoco-ros2-sim:humble
+   docker pull ghcr.io/rkim251-sw-engineering/mujoco-ros2-sim:humble-amd64
    docker compose up sim
    ```
+
+   On an arm64 machine (`uname -m` shows `aarch64`, e.g. a Linux VM on a Mac with Apple silicon),
+   pull `humble-arm64` instead and write `SIM_IMAGE_TAG=humble-arm64` into a `.env` file next to
+   `docker-compose.yml`.
+
+   Without GPU access in Docker (e.g. a Linux VM on a Mac): `docker compose -f docker-compose.yml -f docker-compose.nogpu.yml up sim`
+   (see "Without GPU access" in the simulation README).
 
 3. Explore the interfaces of the simulation, e.g. move the robot from the command line.
 

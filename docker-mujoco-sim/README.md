@@ -14,11 +14,17 @@ mujoco_sim_msgs/   ROS 2 package with the action and service definitions of the 
 
 ## Get the image
 
+There are two variants of the image, one for each processor architecture (`uname -m` shows yours):
+
 ```bash
-docker pull ghcr.io/rkim251-sw-engineering/mujoco-ros2-sim:humble
+docker pull ghcr.io/rkim251-sw-engineering/mujoco-ros2-sim:humble-amd64   # x86_64: most PCs
+docker pull ghcr.io/rkim251-sw-engineering/mujoco-ros2-sim:humble-arm64   # aarch64: e.g. a Linux VM on a Mac with Apple silicon
 ```
 
-The image is public, no login is needed. It runs on Ubuntu 22.04 with ROS 2 Humble and contains
+`../docker-compose.yml` uses `humble-amd64`. On an arm64 machine write `SIM_IMAGE_TAG=humble-arm64`
+into a `.env` file next to `docker-compose.yml`.
+
+The images are public, no login is needed. They run on Ubuntu 22.04 with ROS 2 Humble and contain
 the simulation, the robot models and three ROS 2 nodes:
 
 - `sim_node`: the simulated workcell, publishes joint states and camera images
@@ -36,6 +42,21 @@ VIEWER=false docker compose up sim      # without window
 ```
 
 The simulation runs in real time. Closing the viewer window stops it.
+
+### Without GPU access (e.g. a Linux VM on a Mac)
+
+The compose file passes the GPU (`/dev/dri`) into the container. On machines where Docker has no
+`/dev/dri`, e.g. a Linux VM without 3D acceleration, the container does not start
+("no such file or directory"). `../docker-compose.nogpu.yml` leaves the GPU out and renders on the
+CPU; the viewer window still works, the camera images come at a lower rate. Use it together with
+the normal compose file:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.nogpu.yml up sim
+```
+
+or once write `COMPOSE_FILE=docker-compose.yml:docker-compose.nogpu.yml` into a `.env` file next to
+`docker-compose.yml`, then `docker compose up` uses both.
 
 To look around with the ROS 2 command line tools, open a shell in the running container:
 
@@ -184,6 +205,7 @@ Set these in the shell or in a `.env` file next to `docker-compose.yml`:
 
 | Variable | Default | Meaning |
 |---|---|---|
+| `SIM_IMAGE_TAG` | `humble-amd64` | Image variant: `humble-arm64` on arm64 machines (`uname -m` shows `aarch64`) |
 | `ROS_DOMAIN_ID` | `0` | ROS 2 domain. Choose your own number (0 to 101) if other ROS 2 systems share the network, and use the same in all your containers |
 | `VIEWER` | `true` | Open the viewer window |
 | `VIEWER_CAMERA` | `free` | Camera of the viewer: `free` (move it with the mouse) or `front`, `overview`, `workspace_camera` |

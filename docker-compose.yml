@@ -8,7 +8,9 @@
 services:
   # MuJoCo simulation of the workcell: robot, gripper and camera (see docker-mujoco-sim/README.md)
   sim:
-    image: ghcr.io/rkim251-sw-engineering/mujoco-ros2-sim:humble
+    # humble-amd64 for most PCs, humble-arm64 for arm64 machines (e.g. a Linux VM on a Mac with
+    # Apple silicon): set SIM_IMAGE_TAG=humble-arm64 in the .env file there
+    image: ghcr.io/rkim251-sw-engineering/mujoco-ros2-sim:${SIM_IMAGE_TAG:-humble-amd64}
     container_name: mujoco-sim
     command: >-
       ros2 launch mujoco_sim sim.launch.py viewer:=${VIEWER:-true}
@@ -32,3 +34,4 @@ services:
       - "${RENDER_GID:-109}"
     # ros2 launch shuts its nodes down cleanly on Ctrl+C, not on the default SIGTERM
     stop_signal: SIGINT
+

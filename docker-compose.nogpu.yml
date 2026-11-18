@@ -1,0 +1,17 @@
+# Settings for machines without GPU access in Docker, on top of docker-compose.yml, e.g. a Linux
+# VM on a Mac without 3D acceleration (no /dev/dri):
+#
+#   docker compose -f docker-compose.yml -f docker-compose.nogpu.yml up
+#
+# or once in the .env file next to this file:  COMPOSE_FILE=docker-compose.yml:docker-compose.nogpu.yml
+#
+# The simulation then renders on the CPU: the viewer window works, the camera images come at a
+# lower rate (a few per second).
+services:
+  sim:
+    environment:
+      - MUJOCO_GL=osmesa
+      # Viewer: OpenGL in software right away, instead of first trying the GPU driver of the display
+      - LIBGL_ALWAYS_SOFTWARE=1
+    devices: !reset []
+    group_add: !reset []
